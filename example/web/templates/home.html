@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+  <style>
+    .container {
+      margin-bottom: 2em;
+      margin-top: 2em;
+    }
+    .hide {
+      display: none;
+    }
+  </style>
+  <title>Feature Alert Dashboard</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Feature Alert Dashboard</h1>
+    <hr><br><br>
+    <div class="alert alert-success alert-dismissible fade show hide" role="alert">
+      <strong>Holy guacamole!</strong> New feature alert added.
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="row">
+      <div class="col-lg-9">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Feature Alert ID</th>
+              <th scope="col">Mate Name</th>
+              <th scope="col">Mate Version</th>
+              <th scope="col">Feature Name</th>
+              <th scope="col">Feature Alert Kind</th>
+              <th scope="col">Feature Value</th>
+              <th scope="col">Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for feature_alert in feature_alerts %}
+              <tr>
+                <td>{{ feature_alert.id }}</td>
+                <td>{{ feature_alert.alert.mate_name }}</td>
+                <td>{{ feature_alert.alert.mate_version }}</td>
+                <td>{{ feature_alert.feature_name }}</td>
+                <td>{{ feature_alert.feature_alert_kind }}</td>
+                <td>{{ feature_alert.feature_value }}</td>
+                <td>{{ feature_alert.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col-lg-3 chart-col">
+        <div id="chart"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/umbrellajs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script type="text/javascript" charset="utf-8">
+
+    // socket i0
+
+    u("button.btn-close").on('click', () => {
+      u("div.alert").addClass("hide");
+    });
+
+    const socket = io();
+
+    socket.on("update", (data) => {
+      u("div.alert").removeClass("hide");
+      u("tbody > tr").remove();
+
+      const versions = {};
+
+      (data.feature_alerts).forEach((el) => {
+        const tableRow = [
+          `<tr>`,
+          `<td>${el.id}</td>`,
+          `<td>${el.mate_name}</td>`,
+          `<td>${el.mate_version}</td>`,
+          `<td>${el.feature_name}</td>`,
+          `<td>${el.feature_alert_kind}</td>`,
+          `<td>${el.feature_value}</td>`,
+          `<td>${el.created_at}</td></tr>,`
+        ].join("")
+        u("tbody").append(u(tableRow));
+
+        if (el.mate_version in versions) {
+          versions[el.mate_version] += 1
+        } else {
+          versions[el.mate_version] = 1
+        }
+      });
+
+      u("div#chart").remove();
+      u("div.chart-col").append(u('<div id="chart"></div>'));
+
+      // chart
+      const options = {
+        series: [{
+          name: "Feature Alerts",
+          data: Object.values(versions)
+        }],
+        chart: {
+        height: 350,
+        type: "bar",
+        zoom: {
+          enabled: false
+        }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: "straight"
+        },
+        title: {
+          text: "Feature Alerts by Version",
+          align: "left"
+        },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: Object.keys(versions),
+        }
+      };
+
+      const chart = new ApexCharts(document.querySelector("#chart"), options);
+      chart.render();
+    });
+  </script>
+</body>
+</html>
