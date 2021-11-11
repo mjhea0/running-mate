@@ -103,4 +103,4 @@ $ mypy mate tests example
 
 1. optionally send runtime stats (like latency)
 1. add more tests
-1. add ability to pass in custom, user-defined stats
+1. document how to pass in custom, user-defined stats

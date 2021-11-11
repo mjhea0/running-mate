@@ -1,3 +1,4 @@
+import json
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
@@ -127,3 +128,31 @@ class TerminalAlertTarget(AlertTarget):
 
     def send_alert(self, alert: Alert):
         print(self._format_alert(alert))
+
+
+class SlackAlertTarget(AlertWebhookTarget):
+    def __init__(self, slack_webhook_path: str):
+        # FORMAT: /XXXXX/XXXXXX/XXXXXXXXXXXXXXXXXXXX
+        self.slack_webhook_path = slack_webhook_path
+
+    def _alert_webhook_url(self) -> str:
+        return f"https://hooks.slack.com/services{self.slack_webhook_path}"
+
+    def _format_alert(self, alert: Alert) -> Dict[str, str]:
+        features: List[Dict[str, str]] = []
+
+        for feature_alert in alert.features:
+            features.append(
+                {
+                    "feature_name": feature_alert.name,
+                    "feature_alert_kind": feature_alert.kind,
+                    "feature_value": feature_alert.value,
+                }
+            )
+            mate_version = feature_alert.feature.mate.version
+
+        alert_out = AlertOut(
+            mate_name=alert.mate_name, mate_version=mate_version, features=features
+        )
+
+        return {"text": json.dumps(asdict(alert_out))}

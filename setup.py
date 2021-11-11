@@ -13,5 +13,6 @@ setuptools.setup(
         "dacite==1.6.0",
         "numpy==1.21.3",
         "pandas==1.3.4",
+        "requests==2.26.0",
     ],
 )
