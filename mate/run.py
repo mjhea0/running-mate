@@ -25,7 +25,7 @@ OUTLIER_CUTOFF = 4.0
 logger = logging.getLogger("mate")
 
 
-class mate(object):
+class RunningMate(object):
     mate_name: str
     statistics: Optional[Statistics]
     feature_alerts: List[FeatureAlert]

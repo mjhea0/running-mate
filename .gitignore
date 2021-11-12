@@ -144,3 +144,5 @@ cython_debug/
 
 example/models/*.joblib
 example/models/*.pickle
+
+*.db

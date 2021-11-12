@@ -30,7 +30,7 @@ class Alert(Model):
 class FeatureAlert(Model):
     feature_name = CharField()
     feature_alert_kind = CharField()
-    feature_value = CharField()
+    feature_value = CharField(null=True)
     alert = ForeignKeyField(Alert)
     created_at = DateTimeField(default=datetime.now)
 

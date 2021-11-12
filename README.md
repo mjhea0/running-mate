@@ -1,10 +1,12 @@
 # Running Mate
 
+[![PyPI version](https://badge.fury.io/py/running-mate.svg)](https://badge.fury.io/py/running-mate)
+
 Version and monitor your models, record inferences, and send alerts without any additional infrastructure. Designed for small data science or machine learning teams lacking a full MLOps solution.
 
 Training:
 
-1. Create local SQLite DB
+1. Create local SQLite database
 1. Version model
 1. Generate baseline stats
 
@@ -15,19 +17,45 @@ Inference:
 
 ## Getting Started
 
-After cloning down the repo, create/activate a virtual environment and install the dependencies:
+Install:
 
 ```sh
-$ python3 -m venv venv
-$ source venv/bin/activate
-
-$ pip install -r requirements.txt
+$ pip install running-mate
 ```
 
-Install as local package:
+Running Mate stores data in a local SQLite database. Start by creating the database, creating a new Mate (which represent your AI/ML model), and generate the baseline statistics:
 
-```sh
-$ pip install -e .
+```python
+from mate.db import create_db, version_or_create_mate
+from mate.generators import generate_baseline_stats
+
+
+create_db()
+mate = version_or_create_mate("mate-name")
+generate_baseline_stats(your_dataframe, "mate-name", mate.version)
+```
+
+This ideally happens at training time.
+
+Then, in your serving environment, define the alert targets, get the current Mate version, load the model, wrap you model prediction in the `mate` context manager:
+
+
+```python
+from mate.alerts import TerminalAlertTarget
+from mate.db import get_current_mate
+from mate.run import RunningMate
+
+
+alert_targets = [
+    TerminalAlertTarget(),
+]
+
+version = get_current_mate("mate-name").version
+
+model = load(f"models/mate-name-{version}.joblib")
+
+with RunningMate("mate-name", version, your_dataframe, alert_targets):
+    output = model.predict(enc.transform(your_dataframe))
 ```
 
 ## Example
@@ -101,6 +129,7 @@ $ mypy mate tests example
 
 ## TODO
 
+1. add github actions
 1. optionally send runtime stats (like latency)
 1. add more tests
 1. document how to pass in custom, user-defined stats

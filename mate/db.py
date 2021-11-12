@@ -66,7 +66,7 @@ class StringStats(Model):
 class FeatureAlert(Model):
     name = CharField()
     kind = CharField()
-    value = CharField()
+    value = CharField(null=True)
     feature = ForeignKeyField(Feature)
 
     class Meta:
@@ -75,7 +75,14 @@ class FeatureAlert(Model):
 
 def create_db():
     db.connect()
-    db.create_tables([Mate, Feature, NumericalStats, StringStats, FeatureAlert])
+    if (
+        not db.table_exists("mate")
+        or not db.table_exists("feature")
+        or not db.table_exists("numericalstats")
+        or not db.table_exists("stringstats")
+        or not db.table_exists("featurealert")
+    ):
+        db.create_tables([Mate, Feature, NumericalStats, StringStats, FeatureAlert])
 
 
 def get_current_mate(name: str) -> Union[Mate, None]:
