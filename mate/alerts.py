@@ -13,18 +13,10 @@ logger = logging.getLogger("mate")
 
 
 class FeatureAlertKind(Enum):
-    # sample was more than x standard deviations from mean
-    OUTLIER = "outlier"
-    # sample was outside of lower or upper bounds
-    BOUND = "bound"
-    # sample was not the correct data type
-    TYPE = "type"
-    # sample was null and feature is non-nullable
-    NULL = "null"
-    # sample was negative and feature was non-negative
-    NEGATIVE = "negative"
-    # sample was not a valid variant of a categorical feature
-    CATEGORICAL = "categorical"
+    OUTLIER = "outlier"  # median absolute deviation is greater than 4.0
+    BOUND = "bound"  # outside of lower or upper bounds
+    TYPE = "type"  # incorrect data type
+    NULL = "null"  # null when feature is non-nullable
 
 
 @dataclass
@@ -75,7 +67,7 @@ class AlertWebhookTarget(AlertTarget):
                 {
                     "feature_name": feature_alert.name,
                     "feature_alert_kind": feature_alert.kind,
-                    "feature_value": feature_alert.value,
+                    "feature_value": feature_alert.feature_value.value,
                 }
             )
             mate_version = feature_alert.feature.mate.version
@@ -120,7 +112,7 @@ class TerminalAlertTarget(AlertTarget):
             feature_message = (
                 f"\n    Feature Name: {feature_alert.name}"
                 + f"\n    Feature Alert Kind: {feature_alert.kind}"
-                + f"\n    Feature Value: {feature_alert.value}\n"
+                + f"\n    Feature Value: {feature_alert.feature_value.value}\n"
             )
             alert_message += feature_message
 
@@ -131,8 +123,19 @@ class TerminalAlertTarget(AlertTarget):
 
 
 class SlackAlertTarget(AlertWebhookTarget):
+    """
+    Output alert to a Slack Channel via a Slack Webhook
+
+        Parameters:
+            slack_webhook_path (str):
+                - Slack Webhook path
+                - FORMAT: /XXXXX/XXXXXX/XXXXXXXXXXXXXXXXXXXX)
+                - EXAMPLE:
+                    Given https://hooks.slack.com/services/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 the
+                    slack_webhook_path would be /TG8BB9UKZ/B02LE8DAU5V/KJ1Uyc1ZZcK1pEal44X5GWdL
+    """
+
     def __init__(self, slack_webhook_path: str):
-        # FORMAT: /XXXXX/XXXXXX/XXXXXXXXXXXXXXXXXXXX
         self.slack_webhook_path = slack_webhook_path
 
     def _alert_webhook_url(self) -> str:
@@ -146,7 +149,7 @@ class SlackAlertTarget(AlertWebhookTarget):
                 {
                     "feature_name": feature_alert.name,
                     "feature_alert_kind": feature_alert.kind,
-                    "feature_value": feature_alert.value,
+                    "feature_value": feature_alert.feature_value.value,
                 }
             )
             mate_version = feature_alert.feature.mate.version

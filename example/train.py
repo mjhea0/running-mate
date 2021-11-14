@@ -6,7 +6,7 @@ from joblib import dump  # type: ignore
 from sklearn.linear_model import LinearRegression  # type: ignore
 from sklearn.preprocessing import OneHotEncoder  # type: ignore
 
-from mate.db import create_db, version_or_create_mate
+from mate.db import connect_db, version_or_create_mate
 from mate.generators import generate_baseline_stats
 
 MATE_NAME = "insurance"
@@ -19,9 +19,9 @@ new_df = df.copy()
 X = new_df.drop(["charges"], axis=1)
 
 # version existing mate/create new mate and generate baseline stats
-create_db()
+connect_db()
 mate = version_or_create_mate(MATE_NAME)
-generate_baseline_stats(X, MATE_NAME, mate.version)
+generate_baseline_stats(X, MATE_NAME)
 
 enc = OneHotEncoder(handle_unknown="ignore")
 y = new_df["charges"]

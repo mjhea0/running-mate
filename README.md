@@ -26,13 +26,13 @@ $ pip install running-mate
 Running Mate stores data in a local SQLite database. Start by creating the database, creating a new Mate (which represent your AI/ML model), and generate the baseline statistics:
 
 ```python
-from mate.db import create_db, version_or_create_mate
+from mate.db import connect_db, version_or_create_mate
 from mate.generators import generate_baseline_stats
 
 
-create_db()
+connect_db()
 mate = version_or_create_mate("mate-name")
-generate_baseline_stats(your_dataframe, "mate-name", mate.version)
+generate_baseline_stats(your_dataframe, "mate-name")
 ```
 
 This ideally happens at training time.
@@ -42,7 +42,7 @@ Then, in your serving environment, define the alert targets, get the current Mat
 
 ```python
 from mate.alerts import TerminalAlertTarget
-from mate.db import get_current_mate
+from mate.db import connect_db, get_current_mate
 from mate.run import RunningMate
 
 
@@ -50,12 +50,20 @@ alert_targets = [
     TerminalAlertTarget(),
 ]
 
+connect_db()
 version = get_current_mate("mate-name").version
 
 model = load(f"models/mate-name-{version}.joblib")
 
 with RunningMate("mate-name", version, your_dataframe, alert_targets):
-    output = model.predict(enc.transform(your_dataframe))
+    model.predict(enc.transform(your_dataframe))
+```
+
+By default, not all feature values are recorded. To record all values, set `should_save_all_feature_values` to `True`:
+
+```python
+with RunningMate(MATE_NAME, version, your_dataframe, alert_targets, should_save_all_feature_values=True):
+    model.predict(enc.transform(df))
 ```
 
 ## Example
@@ -131,5 +139,16 @@ $ mypy mate tests example
 
 1. add github actions
 1. optionally send runtime stats (like latency)
-1. add more tests
 1. document how to pass in custom, user-defined stats
+1. add prometheus and grafana example
+1. create basic report
+
+Potential drift example:
+
+```python
+from alibi_detect.cd import KSDrift
+
+cd = KSDrift(X, p_val=0.05, preprocess_x_ref=enc)  # save at training time
+
+preds = cd.predict(df, drift_type='feature', return_p_val=True, return_distance=True)
+```

@@ -3,7 +3,7 @@ import pathlib
 import pandas as pd  # type: ignore
 import pytest
 
-BASE = pathlib.Path(__file__).parent.absolute()
+BASE = pathlib.Path(__file__).parent.parent.absolute()
 
 
 @pytest.fixture(scope="module")

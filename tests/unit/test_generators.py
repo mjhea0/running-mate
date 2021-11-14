@@ -10,10 +10,10 @@ def test_create_statistics_feature(df):
 
 def test_infer_feature_type(df):
     mapping = {
-        "age": FeatureType.INTEGRAL,
+        "age": FeatureType.INTEGER,
         "sex": FeatureType.STRING,
-        "bmi": FeatureType.FRACTIONAL,
-        "children": FeatureType.INTEGRAL,
+        "bmi": FeatureType.FRACTION,
+        "children": FeatureType.INTEGER,
         "smoker": FeatureType.STRING,
         "region": FeatureType.STRING,
     }

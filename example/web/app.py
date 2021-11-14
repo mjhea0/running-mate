@@ -25,6 +25,7 @@ class Alert(Model):
 
     class Meta:
         database = db
+        table_name = "alert"
 
 
 class FeatureAlert(Model):
@@ -36,11 +37,12 @@ class FeatureAlert(Model):
 
     class Meta:
         database = db
+        table_name = "feature_alert"
 
 
 def create_db():
     db.connect()
-    if not db.table_exists("alert") or not db.table_exists("featurealert"):
+    if not db.table_exists("alert") or not db.table_exists("feature_alert"):
         db.create_tables([Alert, FeatureAlert])
 
 

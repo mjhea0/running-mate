@@ -5,7 +5,7 @@ import pandas as pd  # type: ignore
 from joblib import load  # type: ignore
 
 from mate.alerts import AlertWebhookTarget, TerminalAlertTarget
-from mate.db import get_current_mate
+from mate.db import connect_db, get_current_mate
 from mate.run import RunningMate
 
 MATE_NAME = "insurance"
@@ -23,6 +23,7 @@ alert_targets = [
 df = pd.read_csv("data/insurance_infer.csv", sep=",")
 
 # load mate
+connect_db()
 current_mate = get_current_mate(MATE_NAME)
 
 if current_mate:
@@ -33,12 +34,14 @@ if current_mate:
         enc = pickle.load(f)
 
     # valid data (no alerts)
-    with RunningMate(MATE_NAME, version, df, alert_targets):
-        output = model.predict(enc.transform(df))
+    with RunningMate(
+        MATE_NAME, version, df, alert_targets, should_save_all_feature_values=True
+    ):
+        model.predict(enc.transform(df))
 
-    # insert invalid (below minimum bound) value
-    df["age"] = None
+    # insert sample invalid (below minimum bound) value
+    df["age"] = -1
 
     # invalid data (generates an error alert)
     with RunningMate(MATE_NAME, version, df, alert_targets):
-        output = model.predict(enc.transform(df))
+        model.predict(enc.transform(df))

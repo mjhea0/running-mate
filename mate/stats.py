@@ -4,8 +4,8 @@ from typing import List, Optional
 
 
 class FeatureType(Enum):
-    FRACTIONAL = "fractional"
-    INTEGRAL = "integral"
+    FRACTION = "fraction"
+    INTEGER = "integer"
     STRING = "string"
     UNKNOWN = "unknown"
 

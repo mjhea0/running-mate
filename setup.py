@@ -7,7 +7,7 @@ long_description = (BASE / "README.md").read_text()
 
 setuptools.setup(
     name="running-mate",
-    version="0.0.4",
+    version="0.0.5",
     author="Michael Herman",
     author_email="michael@mherman.org",
     description="Lightweight MLOps framework.",

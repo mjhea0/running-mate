@@ -11,7 +11,7 @@ from mate.stats import (
 )
 
 
-def generate_baseline_stats(df: pd.DataFrame, name: str, version: int):
+def generate_baseline_stats(df: pd.DataFrame, name: str):
     statistics = _gen_statistics(df)
 
     mate = get_current_mate(name)
@@ -57,7 +57,7 @@ def _create_statistics_feature(feature_series: pd.Series) -> FeatureStatistics:
 
     common = CommonStatistics(n_present, n_missing)
 
-    if feature_type in {FeatureType.INTEGRAL, FeatureType.FRACTIONAL}:
+    if feature_type in [FeatureType.INTEGER, FeatureType.FRACTION]:
         feature.numerical_statistics = NumericalStatistics(
             common=common,
             mean=feature_series.mean(),
@@ -92,11 +92,11 @@ def _infer_feature_type(feature_series: pd.Series) -> FeatureType:
     # {"int8", "int16", "int32", "int64", "intp"}
     # {"uint8", "uint16", "uint32", "uint64", "uintp"}
     if dtype_name.startswith("int") or dtype_name.startswith("uint"):
-        feature_type = FeatureType.INTEGRAL
+        feature_type = FeatureType.INTEGER
 
     # {"float16", "float32", "float64", "float96", "float128"}:
     elif dtype_name.startswith("float"):
-        feature_type = FeatureType.FRACTIONAL
+        feature_type = FeatureType.FRACTION
 
     # {"string", "<U16/32/...", ">U16/32/...", "=U16/32/..."}
     elif (dtype_name == "string") or (dtype_name[:2] in {"<U", ">U", "=U"}):
