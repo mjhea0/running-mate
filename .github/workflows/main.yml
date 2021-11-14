@@ -1,0 +1,25 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        pip install -r requirements-dev.txt
+        pip install -e .
+    - name: Run tests
+      run: pytest .
+    - name: Check linting, code formatting, and types
+      run: |
+        flake8 --ignore=E501,W503 mate tests example
+        black mate tests example
+        isort --profile black mate tests example
+        mypy mate tests example

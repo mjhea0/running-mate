@@ -1,6 +1,8 @@
 # Running Mate
 
 [![PyPI version](https://badge.fury.io/py/running-mate.svg)](https://badge.fury.io/py/running-mate)
+[![GitHub Actions Status](https://github.com/mjhea0/running-mate/actions/workflows/main.yml/badge.svg)](https://github.com/mjhea0/running-mate/actions/workflows/main.yml)
+
 
 Version and monitor your models, record inferences, and send alerts without any additional infrastructure. Designed for small data science or machine learning teams lacking a full MLOps solution.
 
@@ -137,7 +139,6 @@ $ mypy mate tests example
 
 ## TODO
 
-1. add github actions
 1. optionally send runtime stats (like latency)
 1. document how to pass in custom, user-defined stats
 1. add prometheus and grafana example
