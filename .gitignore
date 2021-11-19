@@ -142,7 +142,7 @@ cython_debug/
 
 *.json
 
-example/models/*.joblib
-example/models/*.pickle
+examples/**/models/*.joblib
+examples/**/models/*.pickle
 
 *.db

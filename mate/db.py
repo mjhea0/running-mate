@@ -144,6 +144,12 @@ def get_features(mate: Mate) -> List[Feature]:
     return features
 
 
+def get_feature_values(mate: Mate) -> List[FeatureValue]:
+    feature_values = FeatureValue.select().join(Feature).where(Feature.mate == mate)
+
+    return feature_values
+
+
 def get_statistics(Stats: Model, feature: Feature) -> Model:
     return Stats.get(feature=feature)
 
