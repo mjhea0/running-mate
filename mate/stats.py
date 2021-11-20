@@ -45,3 +45,9 @@ class Statistics:
     item_count: int
     version: int = 0
     features: List[FeatureStatistics] = field(default_factory=list)
+
+
+@dataclass
+class CustomStats:
+    name: str
+    feature: str
