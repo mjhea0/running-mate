@@ -64,8 +64,16 @@ with RunningMate("mate-name", version, your_dataframe, alert_targets):
 By default, not all feature values are recorded. To record all values, set `should_save_all_feature_values` to `True`:
 
 ```python
-with RunningMate(MATE_NAME, version, your_dataframe, alert_targets, should_save_all_feature_values=True):
+with RunningMate("mate-name", version, your_dataframe, alert_targets, should_save_all_feature_values=True):
     model.predict(enc.transform(df))
+```
+
+You can generate a summary stats report like so:
+
+```python
+from mate.generators import generate_baseline_stats
+
+print(generate_feature_stats_summary_report("mate-name"))
 ```
 
 ## Example
@@ -128,13 +136,13 @@ $ pytest .
 Lint, format code, and type check:
 
 ```sh
-$ flake8 --ignore=E501,W503 mate tests example
+$ python -m flake8 --ignore=E501,W503 mate tests example
 
-$ black mate tests example
+$ python -m black mate tests example
 
-$ isort --profile black mate tests example
+$ python -m isort --profile black mate tests example
 
-$ mypy mate tests example
+$ python -m mypy mate tests example
 ```
 
 ## TODO
@@ -142,7 +150,6 @@ $ mypy mate tests example
 1. optionally send runtime stats (like latency)
 1. document how to pass in custom, user-defined stats
 1. add prometheus and grafana example
-1. create basic report
 
 Potential drift example:
 
