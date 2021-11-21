@@ -34,6 +34,7 @@ class Mate(Model):
 
 class Inference(Model):
     mate = ForeignKeyField(Mate)
+    runtime = CharField(null=True)
     created_at = DateTimeField(default=datetime.datetime.now)
 
     class Meta:
