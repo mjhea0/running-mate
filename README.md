@@ -25,7 +25,7 @@ Install:
 $ pip install running-mate
 ```
 
-Running Mate stores data in a local SQLite database. Start by creating the database, creating a new Mate (which represent your AI/ML model), and generate the baseline statistics:
+Running Mate stores data in a local SQLite database. Start by creating the database, creating a new Mate (which represents your AI/ML model), and generate the baseline statistics:
 
 ```python
 from mate.db import connect_db, version_or_create_mate
@@ -39,7 +39,7 @@ generate_baseline_stats(your_dataframe, "mate-name")
 
 This ideally happens at training time.
 
-Then, in your serving environment, define the alert targets, get the current Mate version, load the model, wrap you model prediction in the `mate` context manager:
+Then, in your serving environment, define the alert targets, get the current Mate version, load the model, wrap your model prediction in the `mate` context manager:
 
 
 ```python
@@ -76,6 +76,8 @@ from mate.generators import generate_baseline_stats
 print(generate_feature_stats_summary_report("mate-name"))
 ```
 
+Have batch or real-time needs? Get in contact to see an example.
+
 ## Examples
 
 The basic example project, found in "examples/basic", uses `TerminalAlertTarget`, for outputting alerts to the terminal, and `AlertWebhookTarget`, for sending alerts to `http://localhost:5000/hook`.
@@ -110,7 +112,7 @@ Navigate to [http://localhost:5000](http://localhost:5000) to see the alert.
 
 ![](examples/basic/example.gif)
 
-There's also a drift example in *examples/drift*.
+There's also a drift example in [examples/drift](https://github.com/mjhea0/running-mate/tree/main/examples/drift).
 
 ## Development
 
