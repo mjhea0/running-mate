@@ -146,8 +146,3 @@ Lint, format code, and type check:
 
 (venv)$ python -m mypy mate tests examples
 ```
-
-## TODO
-
-1. optionally send runtime stats (like latency)
-1. add prometheus and grafana example

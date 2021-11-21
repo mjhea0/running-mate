@@ -179,7 +179,12 @@ class RunningMate(object):
 
     def __exit__(self, type, value, tb):
         time_end = perf_counter()
-        logger.info(f"Elapsed inference time in seconds: {time_end - self.time_start}")
+        runtime = time_end - self.time_start
+
+        self.inference.runtime = runtime
+        self.inference.save()
+
+        logger.info(f"Elapsed inference time in seconds: {runtime}")
 
         inference_exception = None
 
