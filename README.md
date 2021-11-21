@@ -148,8 +148,8 @@ $ python -m mypy mate tests example
 ## TODO
 
 1. optionally send runtime stats (like latency)
-1. document how to pass in custom, user-defined stats
 1. add prometheus and grafana example
+1. add full drift example
 
 Potential drift example:
 

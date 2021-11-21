@@ -18,7 +18,7 @@ from mate.db import (
     get_features,
     get_statistics,
 )
-from mate.stats import FeatureType, Statistics
+from mate.stats import CustomStats, FeatureType, Statistics
 
 MATE_STATISTICS_PATH_VAR = "MATE_STATISTICS_PATH"
 MATE_CONSTRAINTS_PATH_VAR = "MATE_CONSTRAINTS_PATH"
@@ -39,11 +39,13 @@ class RunningMate(object):
         mate_version: int,
         df: pd.DataFrame,
         targets: List[AlertTarget],
+        custom_stats: List[CustomStats] = None,
         should_save_all_feature_values: bool = False,
     ):
         self.mate_name = mate_name
         self.mate_version = mate_version
         self.targets = targets
+        self.custom_stats = custom_stats
         self.should_save_all_feature_values = should_save_all_feature_values
 
         self.mate = get_current_mate(self.mate_name)
@@ -72,10 +74,25 @@ class RunningMate(object):
 
     def _check_statistics(self, df: pd.DataFrame) -> List[FeatureAlert]:
         result = []
-
         for feature in self.features:
             col = df[feature.name]
             result.extend(self._check_feature_statistics(feature, col))
+
+            if self.custom_stats:
+                for stat in self.custom_stats:
+                    if feature.name == stat.feature:
+                        feature_value, created = FeatureValue.get_or_create(
+                            feature=feature, value=col.item(), inference=self.inference
+                        )
+                        result.append(
+                            FeatureAlert.create(
+                                name=col.name,
+                                kind=stat.name,
+                                feature_value=feature_value,
+                                feature=feature,
+                                inference=self.inference,
+                            )
+                        )
 
         logger.info(f"Found {len(result)} statistical alerts.")
 
@@ -107,6 +124,7 @@ class RunningMate(object):
                         kind=FeatureAlertKind.OUTLIER.value,
                         feature_value=feature_value,
                         feature=feature,
+                        inference=self.inference,
                     )
                 )
 

@@ -7,6 +7,7 @@ from joblib import load  # type: ignore
 from mate.alerts import AlertWebhookTarget, TerminalAlertTarget
 from mate.db import connect_db, get_current_mate
 from mate.run import RunningMate
+from mate.stats import CustomStats
 
 MATE_NAME = "insurance"
 
@@ -44,4 +45,14 @@ if current_mate:
 
     # invalid data (generates an error alert)
     with RunningMate(MATE_NAME, version, df, alert_targets):
+        model.predict(enc.transform(df))
+
+    # custom stats (generates an error alert)
+    with RunningMate(
+        MATE_NAME,
+        version,
+        df,
+        alert_targets,
+        custom_stats=[CustomStats("drift", "age")],
+    ):
         model.predict(enc.transform(df))

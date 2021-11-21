@@ -15,7 +15,7 @@ def df():
     return pd.read_csv(BASE.joinpath("data/insurance.csv"), sep=",")
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def baseline_stats(df):
     os.environ["TESTING"] = "1"
     new_df = df.copy()
