@@ -1,7 +1,7 @@
 import logging
 import traceback
 from time import perf_counter
-from typing import List, Optional
+from typing import List, Optional, Sequence
 
 import pandas as pd  # type: ignore
 
@@ -31,14 +31,14 @@ class RunningMate(object):
     mate_name: str
     statistics: Optional[Statistics]
     feature_alerts: List[FeatureAlert]
-    targets: List[AlertTarget]
+    targets: Sequence[AlertTarget]
 
     def __init__(
         self,
         mate_name: str,
         mate_version: int,
         df: pd.DataFrame,
-        targets: List[AlertTarget],
+        targets: Sequence[AlertTarget],
         custom_stats: List[CustomStats] = None,
         should_save_all_feature_values: bool = False,
     ):

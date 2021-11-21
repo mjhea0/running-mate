@@ -21,7 +21,10 @@ alert_targets = [
 ]
 
 # load sample data
-df = pd.read_csv("data/insurance_infer.csv", sep=",")
+df = pd.read_csv("../_data/insurance_infer.csv", sep=",")
+
+df_2 = pd.read_csv(f"../_data/{MATE_NAME}.csv", sep=",")
+X = df_2.drop(["charges"], axis=1)
 
 # load mate
 connect_db()

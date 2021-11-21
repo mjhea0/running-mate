@@ -19,7 +19,7 @@ jobs:
       run: pytest .
     - name: Check linting, code formatting, and types
       run: |
-        flake8 --ignore=E501,W503 mate tests example
-        black mate tests example
-        isort --profile black mate tests example
-        mypy mate tests example
+        flake8 --ignore=E501,W503 mate tests examples
+        black mate tests examples
+        isort --profile black mate tests examples
+        mypy mate tests examples

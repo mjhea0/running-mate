@@ -76,14 +76,14 @@ from mate.generators import generate_baseline_stats
 print(generate_feature_stats_summary_report("mate-name"))
 ```
 
-## Example
+## Examples
 
-The example project uses `TerminalAlertTarget`, for outputting alerts to the terminal, and `AlertWebhookTarget`, for sending alerts to `http://localhost:5000/hook`.
+The basic example project, found in "examples/basic", uses `TerminalAlertTarget`, for outputting alerts to the terminal, and `AlertWebhookTarget`, for sending alerts to `http://localhost:5000/hook`.
 
 Create/activate a virtual environment and install the dependencies:
 
 ```sh
-$ cd example
+$ cd example/basic
 
 $ python3 -m venv venv
 $ source venv/bin/activate
@@ -108,7 +108,9 @@ $ python infer.py
 
 Navigate to [http://localhost:5000](http://localhost:5000) to see the alert.
 
-![](example/example.gif)
+![](examples/basic/example.gif)
+
+There's also a drift example in *examples/drift*.
 
 ## Development
 
@@ -118,45 +120,34 @@ After cloning down the repo, create/activate a virtual environment and install t
 $ python3 -m venv venv
 $ source venv/bin/activate
 
-$ pip install -r requirements-dev.txt
+(venv)$ pip install -r requirements-dev.txt
 ```
 
 Install as local package:
 
 ```sh
-$ pip install -e .
+(venv)$ pip install -e .
 ```
 
 Run tests:
 
 ```sh
-$ pytest .
+(venv)$ python -m pytest .
 ```
 
 Lint, format code, and type check:
 
 ```sh
-$ python -m flake8 --ignore=E501,W503 mate tests example
+(venv)$ python -m flake8 --ignore=E501,W503 mate tests examples
 
-$ python -m black mate tests example
+(venv)$ python -m black mate tests examples
 
-$ python -m isort --profile black mate tests example
+(venv)$ python -m isort --profile black mate tests examples
 
-$ python -m mypy mate tests example
+(venv)$ python -m mypy mate tests examples
 ```
 
 ## TODO
 
 1. optionally send runtime stats (like latency)
 1. add prometheus and grafana example
-1. add full drift example
-
-Potential drift example:
-
-```python
-from alibi_detect.cd import KSDrift
-
-cd = KSDrift(X, p_val=0.05, preprocess_x_ref=enc)  # save at training time
-
-preds = cd.predict(df, drift_type='feature', return_p_val=True, return_distance=True)
-```
