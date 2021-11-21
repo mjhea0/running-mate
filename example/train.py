@@ -8,6 +8,7 @@ from sklearn.preprocessing import OneHotEncoder  # type: ignore
 
 from mate.db import connect_db, version_or_create_mate
 from mate.generators import generate_baseline_stats
+from mate.reports import generate_feature_stats_summary_report
 
 MATE_NAME = "insurance"
 
@@ -37,3 +38,6 @@ dump(model, f"models/{MATE_NAME}-{mate.version}.joblib")
 
 with open(f"models/{MATE_NAME}-encoder-{mate.version}.pickle", "wb") as f:
     pickle.dump(enc, f)
+
+# view summary congig
+print(generate_feature_stats_summary_report(MATE_NAME))
